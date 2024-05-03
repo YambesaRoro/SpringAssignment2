@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Management</title>
+</head>
+<body>
+<h1>Course Management</h1>
+<h2>Create Course</h2>
+<form id="createCourseForm">
+    <label for="category">Category:</label>
+    <input type="text" id="category" name="category" required><br><br>
+    <label for="courseCode">Course Code:</label>
+    <input type="text" id="courseCode" name="courseCode" required><br><br>
+    <button type="submit">Create Course</button>
+</form>
+
+<h2>Update Course</h2>
+<form id="updateCourseForm">
+    <label for="updateCategory">Category:</label>
+    <input type="text" id="updateCategory" name="category" required><br><br>
+    <label for="oldCourseCode">Old Course Code:</label>
+    <input type="text" id="oldCourseCode" name="oldCourseCode" required><br><br>
+    <label for="newCourseCode">New Course Code:</label>
+    <input type="text" id="newCourseCode" name="newCourseCode" required><br><br>
+    <button type="submit">Update Course</button>
+</form>
+
+<h2>Delete Course</h2>
+<form id="deleteCourseForm">
+    <label for="deleteCategory">Category:</label>
+    <input type="text" id="deleteCategory" name="category" required><br><br>
+    <label for="deleteCourseCode">Course Code:</label>
+    <input type="text" id="deleteCourseCode" name="courseCode" required><br><br>
+    <button type="submit">Delete Course</button>
+</form>
+
+<script>
+    // Function to handle form submission for creating a course
+    document.getElementById("createCourseForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        fetch('http://localhost:8080/courses', {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (response.ok) {
+                alert("Course created successfully.");
+            } else {
+                response.text().then(errorMessage => {
+                    alert(errorMessage);
+                });
+            }
+        });
+    });
+
+    // Function to handle form submission for updating a course
+    document.getElementById("updateCourseForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const category = formData.get('category');
+        const oldCourseCode = formData.get('oldCourseCode');
+        const newCourseCode = formData.get('newCourseCode');
+        fetch(`http://localhost:8080/courses/${category}/${oldCourseCode}?newCourseCode=${newCourseCode}`, {
+            method: 'PUT'
+        }).then(response => {
+            if (response.ok) {
+                alert("Course updated successfully.");
+            } else {
+                response.text().then(errorMessage => {
+                    alert(errorMessage);
+                });
+            }
+        });
+    });
+
+    // Function to handle form submission for deleting a course
+    document.getElementById("deleteCourseForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const category = formData.get('category');
+        const courseCode = formData.get('courseCode');
+        fetch(`http://localhost:8080/courses/${category}/${courseCode}`, {
+            method: 'DELETE'
+        }).then(response => {
+            if (response.ok) {
+                alert("Course deleted successfully.");
+            } else {
+                response.text().then(errorMessage => {
+                    alert(errorMessage);
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
+
